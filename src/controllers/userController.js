@@ -23,9 +23,8 @@ function generateToken(params = {}) {
   });
 }
 
-const userController = express.Router();
 
-userController.post("/login", async (req, res) => {
+const validaLogin = async (req, res, next) => {
   if (!req.body) return res.status(400).send("Request body is missing");
   const body = req.body;
   if (!body.email) return res.status(400).send("Email is required");
@@ -42,9 +41,9 @@ userController.post("/login", async (req, res) => {
   const token = jwt.sign({ id: user.id }, auth, { expiresIn: "1h" });
 
   res.send(token);
-});
+};
 
-userController.post("/register", async (req, res) => {
+const registraUsuario = async (req, res, next) => {
   if (!req.body) return res.status(400).send("Request body is missing");
   if (!req.body.email) return res.status(400).send("Email is required");
   if (!req.body.password) return res.status(400).send("Password is required");
@@ -69,6 +68,6 @@ userController.post("/register", async (req, res) => {
   } catch (err) {
     return res.status(400).send("Registration failed");
   }
-});
+};
 
 export default userController;

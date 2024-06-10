@@ -1,7 +1,7 @@
 // app.js (ou outro arquivo principal do servidor)
 import express from 'express';
 import User from './src/models/User.js';
-import userController from './src/controllers/userController.js';
+import userRoutes from './src/routes/userRoutes.js';
 
 const app = express();
 
@@ -15,7 +15,7 @@ const app = express();
 })();
 
 app.use(express.json());
-app.use('/users', userController);
+app.use('/users', userRoutes);
 app.listen(3000, () => {
   console.log('Server is running on port 3000');
 });
