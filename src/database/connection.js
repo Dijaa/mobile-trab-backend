@@ -1,44 +1,32 @@
-import { Sequelize } from "sequelize";
+// database/connection.js
+import { Sequelize } from 'sequelize';
 
-const createDatabaseIfNotExists = async () => {
-  const tempSequelize = new Sequelize('', process.env.USER, process.env.PASSWORD, {
-    host: process.env.HOST,
-    dialect: 'mysql'
-  });
+const sequelize = new Sequelize('', process.env.USER, process.env.PASSWORD, {
+  host: process.env.HOST,
+  dialect: 'mysql'
+});
 
+const initializeDatabase = async () => {
   try {
-    await tempSequelize.query(`CREATE DATABASE IF NOT EXISTS \`${process.env.BASE}\`;`);
+    await sequelize.query(`CREATE DATABASE IF NOT EXISTS \`${process.env.BASE}\`;`);
     console.log('Base de dados criada com sucesso.');
-  } catch (error) {
-    console.error('Erro ao criar a base de dados:', error);
-    throw error;
-  } finally {
-    await tempSequelize.close();
-  }
-};
 
-const connectToDatabase = async () => {
-  const sequelize = new Sequelize(process.env.BASE, process.env.USER, process.env.PASSWORD, {
-    host: process.env.HOST,
-    dialect: 'mysql'
-  });
+    sequelize.close();
 
-  try {
-    await sequelize.authenticate();
+    const db = new Sequelize(process.env.BASE, process.env.USER, process.env.PASSWORD, {
+      host: process.env.HOST,
+      dialect: 'mysql'
+    });
+
+    await db.authenticate();
     console.log('Conexão com a base de dados estabelecida com sucesso.');
+    
+    return db;
   } catch (error) {
-    console.error('Erro ao conectar-se à base de dados:', error);
-    if (error.original && error.original.code === 'ER_BAD_DB_ERROR') {
-      await createDatabaseIfNotExists();
-      await connectToDatabase();
-    } else {
-      throw error;
-    }
+    console.error('Erro durante a inicialização do banco de dados:', error);
   }
-
-  return sequelize;
 };
 
-const sequelize = await connectToDatabase();
+const db = await initializeDatabase();
 
-export default sequelize;
+export default db;
