@@ -70,4 +70,4 @@ const registraUsuario = async (req, res, next) => {
   }
 };
 
-export default userController;
+export default { validaLogin, registraUsuario };
