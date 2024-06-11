@@ -1,6 +1,5 @@
 // app.js (ou outro arquivo principal do servidor)
 import express from 'express';
-import User from './src/models/User.js';
 import userRoutes from './src/routes/userRoutes.js';
 
 const app = express();

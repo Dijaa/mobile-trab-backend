@@ -6,6 +6,15 @@ const auth = process.env.SECRET;
 
 import User from "../models/User.js";
 
+(async () => {
+  try {
+    await User.sync({ alter: true });
+    console.log('Tabela "users" sincronizada com sucesso.');
+  } catch (error) {
+    console.error('Erro durante a sincronização da tabela "users":', error);
+  }
+})();
+
 User.findOne({ where: { email: "admin" } }).then((user) => {
   if (!user) {
     User.create({
