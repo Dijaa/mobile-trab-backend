@@ -1,4 +1,3 @@
-import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -28,10 +27,9 @@ User.findOne({ where: { email: "admin" } }).then((user) => {
 
 function generateToken(params = {}) {
   return jwt.sign(params, auth, {
-    expiresIn: 86400,
+    expiresIn: 7776000,
   });
 }
-
 
 const validaLogin = async (req, res, next) => {
   if (!req.body) return res.status(400).send("Request body is missing");
@@ -48,8 +46,17 @@ const validaLogin = async (req, res, next) => {
   if (!validPassword) return res.status(400).send("Invalid password");
 
   const token = jwt.sign({ id: user.id }, auth, { expiresIn: "1h" });
-
-  res.send(token);
+  let objRes = {
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    },
+    token,
+    success: true,
+  };
+  res.status(200).send(objRes);
 };
 
 const registraUsuario = async (req, res, next) => {
@@ -79,4 +86,27 @@ const registraUsuario = async (req, res, next) => {
   }
 };
 
-export default { validaLogin, registraUsuario };
+const deleteUser = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    await User.destroy({ where: { id } });
+    return res.send("User deleted");
+  } catch (err) {
+    return res.status(400).send("Error deleting user");
+  }
+};
+
+const updateUser = async (req, res, next) => {
+  const { id } = req.params;
+  const { name, email, password, role } = req.body;
+
+  try {
+    await User.update({ name, email }, { where: { id } });
+    return res.send("User updated");
+  } catch (err) {
+    return res.status(400).send("Error updating user");
+  }
+};
+
+export default { validaLogin, registraUsuario, deleteUser, updateUser };

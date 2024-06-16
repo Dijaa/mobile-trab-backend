@@ -5,18 +5,24 @@ const sequelize = connection;
 
 const Barril = sequelize.define("barril", {
   id: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
   },
   litragem: {
-    type: DataTypes.NUMBER,
+    type: DataTypes.INTEGER,
     allowNull: false,
   },
   tipo: {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  codigo: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  }
 });
 
-Barril.sync({ alter: true });
+
+
+export default Barril;
