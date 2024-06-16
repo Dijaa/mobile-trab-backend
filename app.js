@@ -2,6 +2,7 @@
 import express from 'express';
 import userRoutes from './src/routes/userRoutes.js';
 import barrilRoutes from './src/routes/barrilRoutes.js';
+import clienteRoutes from './src/routes/clienteRoutes.js';
 
 const app = express();
 
@@ -17,7 +18,8 @@ const app = express();
 
 app.use(express.json());
 app.use('/users', userRoutes);
-app.use('/barril', barrilRoutes);
+app.use('/barris', barrilRoutes);
+app.use('/clientes', clienteRoutes);
 app.get('/', (req, res) => {
   res.send('Hello World');
 })

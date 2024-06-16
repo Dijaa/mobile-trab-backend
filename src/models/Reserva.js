@@ -37,6 +37,14 @@ const Reserva = sequelize.define("reserva", {
       key: "id",
     },
   },
+  latitude: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  longitude: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
 });
 
 Reserva.sync({ alter: true });

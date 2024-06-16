@@ -17,7 +17,7 @@ const Cliente = sequelize.define(
         allowNull: false,
         },
         numero : {
-        type: DataTypes.NUMBER,
+        type: DataTypes.STRING,
         allowNull: false,
         },
         endereco: {
@@ -26,7 +26,6 @@ const Cliente = sequelize.define(
         },
     });
 
-Cliente.sync({ alter: true });
 
 export default Cliente;
 
