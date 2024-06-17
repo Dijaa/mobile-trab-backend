@@ -1,4 +1,5 @@
 import connection from '../database/connection.js';
+import Reserva from './Reserva.js';
 import { DataTypes } from 'sequelize';
 
 

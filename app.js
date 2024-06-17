@@ -4,6 +4,7 @@ import userRoutes from "./src/routes/userRoutes.js";
 import barrilRoutes from "./src/routes/barrilRoutes.js";
 import clienteRoutes from "./src/routes/clienteRoutes.js";
 import reservaRoutes from "./src/routes/reservaRoutes.js";
+import './src/models/associations.js'
 
 const app = express();
 

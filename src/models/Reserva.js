@@ -1,11 +1,11 @@
-import connection from "../database/connection.js";
-import { DataTypes } from "sequelize";
-import Cliente from "./Cliente.js";
-import Barril from "./Barril.js";
+import { DataTypes } from 'sequelize';
+import connection from '../database/connection.js';
+import Cliente from './Cliente.js';
+import Barril from './Barril.js';
 
 const sequelize = connection;
 
-const Reserva = sequelize.define("reserva", {
+const Reserva = sequelize.define('reserva', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -28,14 +28,14 @@ const Reserva = sequelize.define("reserva", {
     type: DataTypes.INTEGER,
     references: {
       model: Cliente,
-      key: "id",
+      key: 'id',
     },
   },
   barrilId: {
     type: DataTypes.INTEGER,
     references: {
       model: Barril,
-      key: "id",
+      key: 'id',
     },
   },
   latitude: {
@@ -47,5 +47,6 @@ const Reserva = sequelize.define("reserva", {
     allowNull: false,
   },
 });
+
 
 export default Reserva;
