@@ -8,5 +8,7 @@ const reservaRoutes = express.Router();
 
 reservaRoutes.post("/", reservaController.createReserva);
 reservaRoutes.get("/", reservaController.getReserva);
+reservaRoutes.put("/:id", reservaController.markAsDone);
+reservaRoutes.put("/notify/:id", reservaController.nofiticaRetirada);
 
 export default reservaRoutes;

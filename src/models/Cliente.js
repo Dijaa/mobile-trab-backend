@@ -1,32 +1,26 @@
 import connection from '../database/connection.js';
-import Reserva from './Reserva.js';
 import { DataTypes } from 'sequelize';
-
 
 const sequelize = connection;
 
-const Cliente = sequelize.define(
-    "cliente",
-    {
-        id: {
+const Cliente = sequelize.define('cliente', {
+    id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-        },
-        nome: {
+    },
+    nome: {
         type: DataTypes.STRING,
         allowNull: false,
-        },
-        numero : {
+    },
+    numero: {
         type: DataTypes.STRING,
         allowNull: false,
-        },
-        endereco: {
+    },
+    endereco: {
         type: DataTypes.STRING,
         allowNull: false,
-        },
-    });
-
+    },
+});
 
 export default Cliente;
-

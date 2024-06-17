@@ -2,6 +2,7 @@ import Reserva from "../models/Reserva.js";
 import Cliente from "../models/Cliente.js";
 import Barril from "../models/Barril.js";
 import enviaMesangem from "../utils/enviaMensagem.js";
+import { Not } from "typeorm";
 
 (async () => {
   try {
@@ -73,25 +74,30 @@ const createReserva = async (req, res) => {
       res.status(500).send("Erro ao criar reserva");
     });
 };
-
 const getReserva = async (req, res) => {
   try {
     const reservas = await Reserva.findAll({
-      include: [
-        {
-          model: Cliente,
-          as: 'clienteId', // Certifique-se de que este alias está correto conforme a definição das associações.
-          attributes: ['id', 'nome', 'numero', 'endereco'],
-        },
-        {
-          model: Barril,
-          as: 'barril', // Certifique-se de que este alias está correto conforme a definição das associações.
-          attributes: ['id', 'codigo', 'litragem', 'tipo'],
-        },
-      ],
+      where: {
+        status: [0, 1],
+      },
     });
 
-    const reservasPopuladas = reservas.map(reserva => reserva.get({ plain: true }));
+    const reservasPopuladas = await Promise.all(
+      reservas.map(async (reserva) => {
+        const cliente = await Cliente.findByPk(reserva.clienteId);
+        const barril = await Barril.findByPk(reserva.barrilId);
+
+        return {
+          id: reserva.id,
+          dataFinal: reserva.dataFinal,
+          dataInicial: reserva.dataInicial,
+          cliente: cliente,
+          barril: barril,
+          latitude: reserva.latitude,
+          longitude: reserva.longitude,
+        };
+      })
+    );
 
     res.status(200).send(reservasPopuladas);
   } catch (error) {
@@ -99,5 +105,59 @@ const getReserva = async (req, res) => {
     res.status(500).send("Erro ao buscar reserva");
   }
 };
+const markAsDone = async (req, res) => {
+  try {
+    const reserva = await Reserva.findByPk(req.params.id);
+    if (!reserva) return res.status(404).send("Reserva não encontrada");
 
-export default { createReserva, getReserva };
+    reserva.status = 2;
+    await reserva.save();
+
+    if (!reserva) return res.status(404).send("Reserva não encontrada");
+    let resReserva = {
+      success: true,
+      message: "Reserva marcada como concluída",
+    };
+    res.status(200).send(resReserva);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Erro ao marcar reserva como concluída");
+  }
+};
+
+const nofiticaRetirada = async (req, res) => {
+  try {
+    const reserva = await Reserva.findOne({
+      where: {
+        id: req.params.id,
+        status: [0, 1],
+      },
+    }
+    );
+    console.log(reserva);
+    if (!reserva) return res.status(404).send("Reserva não encontrada");
+    let cliente = await Cliente.findByPk(reserva.clienteId);
+    let numero = cliente.numero;
+    let barril = await Barril.findByPk(reserva.barrilId);
+
+    if (reserva.status == 0)
+      enviaMesangem(
+        numero,
+        `Olá ${cliente.nome},\n\n Estou Passando aqui pra avisar que estamos indo recolher o barril que você reservou!\n\n O barril que você reservou é o de código ${barril.codigo}.\nCom ${barril.litragem} litros.\nTipo: ${barril.tipo}\n\nObrigado pela preferência!\n\n Atenciosamente, equipe da cervejaria!`
+      );
+    reserva.status = 1;
+    await reserva.save();
+    if (!reserva) return res.status(404).send("Reserva não encontrada");
+
+    let resReserva = {
+      success: true,
+      message: "notificação enviada com sucesso!",
+    };
+    res.status(200).send(resReserva);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Erro ao marcar reserva como concluída");
+  }
+};
+
+export default { createReserva, getReserva, markAsDone, nofiticaRetirada };
