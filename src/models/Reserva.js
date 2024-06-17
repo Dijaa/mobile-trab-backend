@@ -12,16 +12,17 @@ const Reserva = sequelize.define("reserva", {
     autoIncrement: true,
   },
   dataInicial: {
-    type: DataTypes.TIME,
+    type: DataTypes.DATE,
     allowNull: false,
   },
   dataFinal: {
-    type: DataTypes.TIME,
+    type: DataTypes.DATE,
     allowNull: false,
   },
   status: {
-    type: DataTypes.STRING,
+    type: DataTypes.INTEGER,
     allowNull: false,
+    defaultValue: 0,
   },
   clienteId: {
     type: DataTypes.INTEGER,
@@ -46,7 +47,5 @@ const Reserva = sequelize.define("reserva", {
     allowNull: false,
   },
 });
-
-Reserva.sync({ alter: true });
 
 export default Reserva;
