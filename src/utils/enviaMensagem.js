@@ -21,7 +21,7 @@ const enviaMesangem = async (numero, mensagem) => {
       redirect: "follow",
     };
   
-    fetch("http://192.168.0.155:8080/message/sendText/mobile", requestOptions)
+    fetch("http://localhost:8080/message/sendText/mobile", requestOptions)
       .then((response) => response.text())
       .then((result) => console.log(result))
       .catch((error) => console.error(error));

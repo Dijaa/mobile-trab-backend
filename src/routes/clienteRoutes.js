@@ -4,7 +4,7 @@ import authMiddleware from "../middleware/authMiddleware.js";
 
 const clienteRoutes = express.Router();
 
-// clienteRoutes.use(authMiddleware);
+clienteRoutes.use(authMiddleware);
 
 clienteRoutes.post("/", clienteController.createCliente);
 clienteRoutes.get("/", clienteController.getCliente);
